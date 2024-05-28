@@ -1,5 +1,10 @@
 # Apache-Kafka-Experiments
 
+- librdkafka is a C library implementation of the Apache Kafka protocol, providing Producer, Consumer and Admin clients. It was designed with message delivery reliability and high performance in mind, current figures exceed 1 million msgs/second for the producer and 3 million msgs/second for the consumer.
+- librdkafka is licensed under the 2-clause BSD license.
+- KAFKA is a registered trademark of The Apache Software Foundation and has been licensed for use by librdkafka. librdkafka has no affiliation with and is not endorsed by The Apache Software Foundation.
+- cppkafka allows C++ applications to consume and produce messages using the Apache Kafka protocol. The library is built on top of librdkafka, and provides a high level API that uses modern C++ features to make it easier to write code while keeping the wrapper's performance overhead to a minimum.
+
 ## KafkaProducer.cpp
 This C++ code is designed to capture frames from a camera and send them to a Kafka topic. Here's a breakdown of what the code does: 
 1. The necessary headers are included, such as `iostream`, `vector`, `cstring`, `opencv2/opencv.hpp`, and `rdkafkacpp.h`.
