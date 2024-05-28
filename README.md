@@ -1,6 +1,9 @@
 # Apache-Kafka-Experiments
 
+## KafkaConsumer.cpp
 
+
+## KafkaConsumer.cpp
 This C++ code is designed to consume video frames from a Kafka topic named "opencv_frames" and display them using the OpenCV library. Here's a breakdown of what the code does: 
 1. The necessary headers are included: `opencv2/opencv.hpp` (main OpenCV library), `opencv2/imgcodecs.hpp` (for image/video encoding and decoding), `opencv2/highgui.hpp` (for GUI functionality), and `librdkafka/rdkafkacpp.hpp` (for Kafka C++ client library).
 2. In the `main` function, a Kafka consumer instance is created using the `RdKafka::KafkaConsumer` class from the Kafka C++ library. - A configuration object (`RdKafka::Conf`) is created and set with the Kafka broker IP address and port (`"kafka_broker_ip:9092"`). - The consumer instance is created using the configuration object.
