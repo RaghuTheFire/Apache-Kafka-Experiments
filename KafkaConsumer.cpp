@@ -1,49 +1,42 @@
-
 #include <opencv2/opencv.hpp>
-#include <opencv2/core/core.hpp>
-#include <opencv2/highgui/highgui.hpp>
-#include <cstdlib>
-#include <cstring>
-#include <iostream>
-#include <vector>
-#include <cppkafka/cppkafka.h>
-
-using namespace cv;
-using namespace std;
+#include <opencv2/imgcodecs.hpp>
+#include <opencv2/highgui.hpp>
+#include <librdkafka/rdkafkacpp.h>
 
 int main() 
 {
-    // Create a Kafka consumer
-    cppkafka::Configuration config = 
-    {
-        {"metadata.broker.list", "localhost:9092"},
-        {"group.id", "my-group"},
-        {"enable.auto.commit", false}
-    };
-    cppkafka::Consumer consumer(config);
-    consumer.subscribe({"opencv-frames"});
+    // Create a Kafka consumer instance
+    RdKafka::Conf *conf = RdKafka::Conf::create(RdKafka::Conf::CONF_GLOBAL);
+    RdKafka::Conf::ConfResult result = conf->set("metadata.broker.list", "kafka_broker_ip:9092", errstr);
+    RdKafka::KafkaConsumer *consumer = RdKafka::KafkaConsumer::create(conf, errstr);
 
-    // Consume messages
+    // Subscribe to the topic
+    std::vector<std::string> topics = {"opencv_frames"};
+    consumer->subscribe(topics);
+
+    // Continuously consume messages from Kafka
     while (true) 
     {
-        cppkafka::Message msg = consumer.poll();
-        if (msg) 
+        RdKafka::Message *msg = consumer->consume(1000);
+        if (msg->err() == RdKafka::ERR_NO_ERROR) 
         {
-            // Decode the OpenCV frame from the message payload
-            vector<uchar> data(msg.get_payload().get_data(),
-                               msg.get_payload().get_data() + msg.get_payload().get_size());
-            Mat frame = imdecode(data, IMREAD_COLOR);
+            // Decode the received message as an OpenCV frame
+            cv::Mat frame = cv::imdecode(cv::Mat(1, msg->len(), CV_8UC1, msg->payload()), cv::IMREAD_COLOR);
 
             // Display the frame
-            imshow("Frame", frame);
-            if (waitKey(1) == 27) // Press 'ESC' to exit
-            {  
-                break;
-            }
-            // Commit the offset
-            consumer.commit(msg);
+            cv::imshow("Received Frame", frame);
+            cv::waitKey(1);
+        } 
+        else 
+        {
+            std::cerr << "Error consuming message: " << msg->errstr() << std::endl;
         }
+        delete msg;
     }
+
+    consumer->close();
+    delete consumer;
+    delete conf;
 
     return 0;
 }
