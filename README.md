@@ -33,3 +33,16 @@ This C++ code is designed to consume video frames from a Kafka topic named "open
 - The message object is deleted using `delete msg` to free the memory.
 5. After the infinite loop, the consumer is closed using `consumer->close()`, and the consumer, configuration objects are deleted using `delete` to free the memory.
 6. The program exits with a return code of 0. In summary, this code sets up a Kafka consumer to receive video frames from the "opencv_frames" topic, decodes the received frames using OpenCV, and displays them in a window. It continuously listens for new messages and processes them as they arrive.
+
+## Producer&Consumer.cpp
+
+This C++ code demonstrates a simple video streaming application using OpenCV and Apache Kafka. It consists of two main components: a publisher and a subscriber. The publisher captures frames from the default camera and sends them to a Kafka topic, while the subscriber consumes frames from the same Kafka topic and displays them in a window. Here's a breakdown of the code: 
+1. The necessary headers are included, such as `iostream`, `thread`, `vector`, `opencv2/opencv.hpp`, and `cppkafka/cppkafka.h`. 2. The Kafka broker address and topic name are defined as constants.
+3. The `publishFrames` function is responsible for capturing frames from the default camera, encoding them as JPEG, and sending them to the Kafka topic using the `cppkafka::Producer`.
+4. The `consumeFrames` function is responsible for consuming messages from the Kafka topic using the `cppkafka::Consumer`, decoding the JPEG data into an OpenCV `Mat` object, and displaying the frames in a window.
+5. In the `main` function:
+- A Kafka producer and consumer are created with the specified configuration.
+- Two threads are created: one for the publisher (`publisherThread`) and one for the subscriber (`subscriberThread`).
+- The `publisherThread` calls the `publishFrames` function, passing the Kafka producer as a reference.
+- The `subscriberThread` calls the `consumeFrames` function, passing the Kafka consumer as a reference.
+6. The main thread waits for both the publisher and subscriber threads to finish by calling `join()` on each thread. The publisher thread continuously captures frames from the camera, encodes them as JPEG, and sends them to the Kafka topic. The subscriber thread continuously consumes messages from the Kafka topic, decodes the JPEG data into OpenCV `Mat` objects, and displays the frames in a window. Both the publisher and subscriber windows can be closed by pressing the 'Esc' key. This code demonstrates the integration of OpenCV for video capture and display, and Apache Kafka for messaging and data streaming between the publisher and subscriber components.
