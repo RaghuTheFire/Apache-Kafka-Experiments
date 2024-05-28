@@ -1,8 +1,23 @@
 # Apache-Kafka-Experiments
 
-## KafkaConsumer.cpp
-
-
+## KafkaProducer.cpp
+This C++ code is designed to capture frames from a camera and send them to a Kafka topic. Here's a breakdown of what the code does: 
+1. The necessary headers are included, such as `iostream`, `vector`, `cstring`, `opencv2/opencv.hpp`, and `rdkafkacpp.h`.
+2. The `main` function is the entry point of the program.
+3. An instance of `VideoCapture` is created to access the camera (in this case, the default camera with index 0).
+4. The program checks if the camera is opened successfully. If not, it prints an error message and exits.
+5. A Kafka producer is created by configuring the Kafka broker address (`localhost:9092` in this case).
+6. If the Kafka configuration is successful, a `RdKafka::Producer` instance is created.
+7. The program enters a loop where it continuously captures frames from the camera.
+8. Each captured frame is checked for emptiness. If the frame is empty, an error message is printed, and the loop is broken.
+9. The captured frame is encoded as a vector of bytes using the OpenCV `imencode` function with the JPEG format.
+10. The encoded frame is sent to a Kafka topic named "opencv_frames" using the `produce` method of the Kafka producer.
+11. If there is an error sending the frame to Kafka, an error message is printed.
+12. The buffer used for encoding the frame is cleared for the next iteration.
+13. The program waits for the user to press the Esc key (ASCII code 27) to exit the loop.
+14. After the loop ends, the camera is released, and the Kafka producer and configuration objects are deleted.
+15. The program exits with a return code of 0. In summary, this code continuously captures frames from a camera, encodes them as JPEG images, and sends them to a Kafka topic named "opencv_frames". It uses the OpenCV library for camera access and image encoding, and the RdKafka C++ library for interacting with the Kafka broker.
+    
 ## KafkaConsumer.cpp
 This C++ code is designed to consume video frames from a Kafka topic named "opencv_frames" and display them using the OpenCV library. Here's a breakdown of what the code does: 
 1. The necessary headers are included: `opencv2/opencv.hpp` (main OpenCV library), `opencv2/imgcodecs.hpp` (for image/video encoding and decoding), `opencv2/highgui.hpp` (for GUI functionality), and `librdkafka/rdkafkacpp.hpp` (for Kafka C++ client library).
